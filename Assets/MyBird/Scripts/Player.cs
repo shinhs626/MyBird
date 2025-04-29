@@ -1,5 +1,5 @@
+using TMPro;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 namespace MyBird
 {
@@ -24,6 +24,15 @@ namespace MyBird
         //대기
         //아래로 떨어지지 않을 만큼의 새를 받히는 힘
         [SerializeField] private float readyForce = 0.295f;
+
+        //애니메이션
+        public Animator animator;
+
+        //Ready UI
+        public GameObject readyUI;
+
+        //Gameover UI
+        public GameObject resultUI;
         #endregion
 
         #region Unity Event Method
@@ -33,8 +42,6 @@ namespace MyBird
         void Start()
         {
             rb2D = this.GetComponent<Rigidbody2D>();
-
-            
         }
 
         // Update is called once per frame
@@ -45,16 +52,21 @@ namespace MyBird
 
             if (GameManager.IsStart == false)
             {
-                //버드 대기
                 ReadyBird();
+                //UI
+                readyUI.SetActive(true);
                 return;
             }
+            else
+            {
+                //UI 히든
+                readyUI.SetActive(false);
+                //버드 회전
+                RotateBird();
 
-            //버드 회전
-            RotateBird();
-
-            //버드 이동
-            MoveBird();
+                //버드 이동
+                MoveBird();
+            } 
         }
         private void FixedUpdate()
         {
@@ -70,11 +82,8 @@ namespace MyBird
             //collision : 부딛힌 콜라이더 정보를 가지고 있다
             if(collision.gameObject.tag == "Ground")
             {
-                Debug.Log("Ground에 부딛힘");
-            }
-            else if (collision.gameObject.tag == "Pipe")
-            {
-                Debug.Log("Pipe에 부딛힘");
+                DieBird();
+                //Debug.Log("Ground에 부딛힘");
             }
         }
         private void OnTriggerEnter2D(Collider2D collision)
@@ -82,7 +91,13 @@ namespace MyBird
             //collision : 부딛힌 콜라이더 정보를 가지고 있다.
             if (collision.gameObject.tag == "Point")
             {
-                Debug.Log("점수 획득");
+                //Debug.Log("점수 획득");
+                GameManager.Score++;
+            }
+            else if (collision.gameObject.tag == "Pipe")
+            {
+                DieBird();
+                //Debug.Log("Pipe에 부딛힘");
             }
         }
         #endregion
@@ -91,6 +106,11 @@ namespace MyBird
         //인풋처리
         void InputBird()
         {
+            if (GameManager.IsDeath)
+            {
+                return;
+            }
+
             //스페이스키 또는 마우스 왼클릭 입력 받기
             keyJump |= Input.GetKeyDown(KeyCode.Space);
             keyJump |= Input.GetMouseButtonDown(0);
@@ -140,10 +160,24 @@ namespace MyBird
 
         void MoveBird()
         {
-            if (GameManager.IsStart == false)
+            if (GameManager.IsStart == false || GameManager.IsDeath == true)
                 return;
 
             this.transform.Translate(Vector3.right * Time.deltaTime * moveSpeed, Space.World);
+        }
+
+        //버드 죽음
+        void DieBird()
+        {
+            //두번 죽음 체크
+            if (GameManager.IsDeath)
+                return;
+
+            GameManager.IsDeath = true;
+            animator.enabled = false;
+            rb2D.linearVelocity = Vector2.zero;
+
+            resultUI.SetActive(true);
         }
         #endregion
     }

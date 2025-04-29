@@ -13,12 +13,41 @@ namespace MyBird
             get;
             set;
         }
+
+        public static bool IsDeath
+        {
+            get;
+            set;
+        }
+        public static int Score
+        {
+            get;
+            set;
+        }
+        public static int BestScore
+        {
+            get;
+            set;
+        }
         #endregion
 
-        private void Start()
+        public void Start()
+        {
+            //최고 점수 가져오기
+            BestScore = PlayerPrefs.GetInt("BestScore", 0);
+
+            //초기화
+            IsStart = false;
+            IsDeath = false;
+            Score = 0;
+        }
+
+        public static void ResetGame()
         {
             //초기화
             IsStart = false;
+            IsDeath = false;
+            Score = 0;
         }
     }
 }

@@ -29,6 +29,11 @@ namespace MyBird
             if (!GameManager.IsStart)
                 return;
 
+            if (GameManager.IsDeath)
+            {
+                return;
+            }
+
             countdown += Time.deltaTime;
             if (countdown >= pipeTimer)
             {

@@ -33,6 +33,8 @@ namespace MyBird
             if (GameManager.IsStart == false)
                 return;
 
+            float speed = (GameManager.IsDeath) ? moveSpeed / 5f : moveSpeed;
+
             this.transform.Translate(Vector3.left * Time.deltaTime * moveSpeed, Space.World);
             if (this.transform.localPosition.x <= resetPosition)
             {
