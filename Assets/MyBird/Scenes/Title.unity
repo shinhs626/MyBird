@@ -628,6 +628,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   fader: {fileID: 1733349727}
   loadToScene: PlayScene
+  isCheat: 0
 --- !u!1 &1207891199
 GameObject:
   m_ObjectHideFlags: 0

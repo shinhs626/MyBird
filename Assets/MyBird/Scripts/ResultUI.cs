@@ -38,7 +38,7 @@ namespace MyBird
         public void Retry()
         {
             GameManager.ResetGame();
-            fader.FadeTo(retryScene);
+            fader.FadeTo(SceneManager.GetActiveScene().name);
         }
 
         public void Menu()

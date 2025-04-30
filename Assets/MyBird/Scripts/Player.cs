@@ -33,6 +33,9 @@ namespace MyBird
 
         //Gameover UI
         public GameObject resultUI;
+
+        //오디오 소스
+        public AudioSource getPoint;
         #endregion
 
         #region Unity Event Method
@@ -42,6 +45,7 @@ namespace MyBird
         void Start()
         {
             rb2D = this.GetComponent<Rigidbody2D>();
+            getPoint = this.GetComponent<AudioSource>();
         }
 
         // Update is called once per frame
@@ -93,6 +97,9 @@ namespace MyBird
             {
                 //Debug.Log("점수 획득");
                 GameManager.Score++;
+
+                //오디오 소스
+                getPoint.Play();
             }
             else if (collision.gameObject.tag == "Pipe")
             {
@@ -111,12 +118,25 @@ namespace MyBird
                 return;
             }
 
+#if UNITY_EDITOR
             //스페이스키 또는 마우스 왼클릭 입력 받기
             keyJump |= Input.GetKeyDown(KeyCode.Space);
             keyJump |= Input.GetMouseButtonDown(0);
+#else
+            //터치 인풋 처리
+             if (Input.touchCount > 0)
+            {
+                Touch touch = Input.GetTouch(0);    //첫 번째 터치만 처리
 
+                //tab처리
+                if(touch.phase == TouchPhase.Began)
+                {
+                    keyJump |= true;
+                }
+            }
+#endif
             //게임 시작전이고 키가 눌리면 
-            if(GameManager.IsStart == false && keyJump == true)
+            if (GameManager.IsStart == false && keyJump == true)
             {
                 GameManager.IsStart = true;
             }
@@ -179,7 +199,7 @@ namespace MyBird
 
             resultUI.SetActive(true);
         }
-        #endregion
+#endregion
     }
 
 }
